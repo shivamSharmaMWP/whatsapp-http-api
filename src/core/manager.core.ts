@@ -45,8 +45,9 @@ export function buildLogger(name) {
 
 @Injectable()
 export class SessionManagerCore extends SessionManager {
-  private session: WhatsappSession;
-  DEFAULT = 'default';
+    //private session: WhatsappSession;
+    private sessions: WhatsappSession[];
+    DEFAULT = 'default';
 
   // @ts-ignore
   protected MediaStorageClass = MediaStorageCore;
@@ -61,7 +62,8 @@ export class SessionManagerCore extends SessionManager {
     super();
 
     this.log.setContext('SessionManager');
-    this.session = undefined;
+    //this.session = undefined;
+    this.sessions = [];
     const engineName = this.config.getDefaultEngineName();
     this.EngineClass = this.getEngine(engineName);
     this.sessionStorage = new SessionStorageCore(engineName.toLowerCase());
@@ -95,7 +97,7 @@ export class SessionManagerCore extends SessionManager {
   }
 
   async onApplicationShutdown(signal?: string) {
-    if (!this.session) {
+    if (!this.sessions.length) {
       return;
     }
     await this.stop({ name: this.DEFAULT, logout: false });
@@ -105,7 +107,7 @@ export class SessionManagerCore extends SessionManager {
   // API Methods
   //
   async start(request: SessionStartRequest): Promise<SessionDTO> {
-    this.onlyDefault(request.name);
+//    this.onlyDefault(request.name);
 
     const name = request.name;
     this.log.log(`'${name}' - starting session...`);
@@ -125,7 +127,8 @@ export class SessionManagerCore extends SessionManager {
     await this.sessionStorage.init(name);
     // @ts-ignore
     const session = new this.EngineClass(sessionConfig);
-    this.session = session;
+    //this.session = session;
+    this.sessions.push(session);
 
     // configure webhooks
     const webhooks = this.getWebhooks(request);
@@ -162,19 +165,19 @@ export class SessionManagerCore extends SessionManager {
     if (request.config?.proxy) {
       return request.config.proxy;
     }
-    const sessions = { [request.name]: this.session };
+    const sessions = { [request.name]: this.sessions };
     return getProxyConfig(this.config, sessions, request.name);
   }
 
   async stop(request: SessionStopRequest): Promise<void> {
-    this.onlyDefault(request.name);
+//    this.onlyDefault(request.name);
 
     const name = request.name;
     this.log.log(`Stopping ${name} session...`);
     const session = this.getSession(name);
     await session.stop();
     this.log.log(`"${name}" has been stopped.`);
-    this.session = undefined;
+    this.sessions = undefined;
   }
 
   async logout(request: SessionLogoutRequest) {
@@ -182,8 +185,10 @@ export class SessionManagerCore extends SessionManager {
   }
 
   getSession(name: string, error = true): WhatsappSession {
-    this.onlyDefault(name);
-    const session = this.session;
+//     this.onlyDefault(name);
+    
+//    const session = this.session;
+    const session = this.sessions.filter(s => s.name === name)[0];
     if (!session) {
       if (error) {
         throw new NotFoundException(
@@ -196,7 +201,7 @@ export class SessionManagerCore extends SessionManager {
   }
 
   async getSessions(all: boolean): Promise<SessionInfo[]> {
-    if (!this.session) {
+    if (!this.sessions) {
       if (!all) {
         return [];
       }
@@ -209,14 +214,27 @@ export class SessionManagerCore extends SessionManager {
         },
       ];
     }
-    const me = await this.session.getSessionMeInfo().catch((err) => null);
-    return [
-      {
-        name: this.session.name,
-        status: this.session.status,
-        config: this.session.sessionConfig,
-        me: me,
-      },
-    ];
+    // const me = await this.session.getSessionMeInfo().catch((err) => null);
+    // return [
+    //   {
+    //     name: this.session.name,
+    //     status: this.session.status,
+    //     config: this.session.sessionConfig,
+    //     me: me,
+    //   },
+    // ];
+
+    for(let i=0; i< this.sessions.length; i++) {
+        const session = this.sessions[0]
+        const me = await session.getSessionMeInfo().catch((err) => null);
+        return [
+            {
+            name: session.name,
+            status: session.status,
+            config: session.sessionConfig,
+            me: me,
+            },
+        ];
+    }
   }
 }

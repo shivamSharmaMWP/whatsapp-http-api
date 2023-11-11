@@ -47,7 +47,8 @@ import {
 import { WASessionStatusBody } from '../../structures/webhooks.dto';
 
 const CHROME_PATH = '/usr/bin/google-chrome-stable';
-const CHROMIUM_PATH = '/usr/bin/chromium';
+// const CHROMIUM_PATH = '/usr/bin/chromium';
+const CHROMIUM_PATH = 'C:\\Users\\Chaitanya\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe';
 
 export function getBrowserExecutablePath() {
   if (fs.existsSync(CHROME_PATH)) {

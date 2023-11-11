@@ -8,7 +8,7 @@ import { WhatsappSession } from './abc/session.abc';
 
 export function getProxyConfig(
   config: WhatsappConfigService,
-  sessions: Record<string, WhatsappSession>,
+  sessions: Record<string, WhatsappSession[]>,
   sessionName?: string,
 ): ProxyConfig | undefined {
   // Single proxy server configuration
