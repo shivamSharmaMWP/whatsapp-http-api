@@ -57,6 +57,21 @@ Not running Chromium saves you CPU and Memory, so you can run more instances on 
 It's a high-performance system developed with JavaScript to create a bot for WhatsApp.
 It uses Puppeteer to run a real instance of Whatsapp Web to avoid getting blocked.
 
+## Docker images
+WAHA provides few docker images with different setup.
+{{< alert icon="👉" text="Use `devlikeapro/whatsapp-http-api` instead of `devlikeapro/whatsapp-http-api-plus` to get **WAHA Plus** version." />}}
+
+For **x86** processors use following images:
+- `devlikeapro/whatsapp-http-api:latest` - latest version of WAHA, using **Chromium** (does not support video receiving and receiving in Plus version)
+- `devlikeapro/whatsapp-http-api:chrome` - latest version of WAHA, using **Chrome** (supports video receiving and receiving in Plus version)
+- `devlikeapro/whatsapp-http-api:noweb`- latest version of WAHA, **no browser installed** - use it only for **NOWEB** engine
+
+For **ARM** processors use following images:
+- `devlikeapro/whatsapp-http-api:arm` - **Chromium**
+- `devlikeapro/whatsapp-http-api:arm-noweb`- **no browser installed**
+
+{{< alert icon="💡" text="Chrome version is not available in ARM" />}}
+
 ## Features
 
 Some engines may not support certain features.
@@ -79,6 +94,7 @@ it's the engine WAHA runs by default.
 | Communicate with WhatsApp via websocket (no browser)         |   ➖   |  ✔️   |   ➖   |
 
 ### Endpoints
+
 If you find any inconsistency with actual endpoints -
 please [create an issue](https://github.com/devlikeapro/whatsapp-http-api/issues/new?title=Error+in+engine+features )
 
@@ -109,6 +125,7 @@ please [create an issue](https://github.com/devlikeapro/whatsapp-http-api/issues
 | `POST /api/sendImage` ![](/images/versions/plus.png) |  ✔️   |  ✔️   |  ✔️   |
 | `POST /api/sendFile` ![](/images/versions/plus.png)  |  ✔️   |  ✔️   |  ✔️   |
 | `POST /api/sendVoice` ![](/images/versions/plus.png) |  ✔️   |  ✔️   |  ✔️   |
+| `POST /api/sendVideo` ![](/images/versions/plus.png) |  ✔️   |  ✔️   |   ➖   |
 | `POST /api/reply`                                    |  ✔️   |  ✔️   |  ✔️   |
 | `POST /api/sendSeen`                                 |  ✔️   |  ✔️   |  ✔️   |
 | `POST /api/startTyping`                              |  ✔️   |  ✔️   |  ✔️   |
